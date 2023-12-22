@@ -1,6 +1,9 @@
 name: RubyGems.org Release
 
 on:
+  push:
+    tags:
+      - v*
   workflow_dispatch:
 
 jobs:
@@ -8,14 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write # IMPORTANT: this permission is mandatory for trusted publishing
-      contents: write # IMPORTANT: this permission is required for `rake release` to push the release tag
+      id-token: write # for trusted publishing
 
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
           ruby-version: ruby
-      - uses: rubygems/release-gem@v1
+      - uses: rubygems/configure-rubygems-credentials@v1.0.0
+      - run: gem build slenips.gemspec
+      - run: gem install ./slenips-*.gem
+      - run: gem push ./slenips-*.gem
