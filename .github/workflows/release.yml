@@ -23,7 +23,7 @@ jobs:
       - run: gem build slenips.gemspec
       - run: gem install ./slenips-*.gem
       - run: |
-          ruby -S gem exec sigstore-cli:0.2.1 sign slenips --bundle attestation.sigstore.json
+          ruby -S gem exec sigstore-cli:0.2.1 sign ./slenips-*.gem --bundle attestation.sigstore.json
       - uses: actions/upload-artifact@v4
         with:
           name: attestation
