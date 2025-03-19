@@ -22,4 +22,11 @@ jobs:
       - uses: rubygems/configure-rubygems-credentials@v1.0.0
       - run: gem build slenips.gemspec
       - run: gem install ./slenips-*.gem
-      - run: gem push ./slenips-*.gem
+      - run: |
+          ruby -S gem exec sigstore-cli:0.2.1 sign slenips --bundle attestation.sigstore.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: attestation
+          path: attestation.sigstore.json
+      - run: |
+          gem push --attestation attestation.sigstore.json ./slenips-*.gem
